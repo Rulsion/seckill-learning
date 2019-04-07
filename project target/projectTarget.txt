@@ -1,0 +1,51 @@
+1.spring的熟悉
+2.springboot熟悉以及学习
+    需要进行application.yml或者application.properties的配置
+    需要进行
+    @RestController取代@Controller
+3.spring jpa的学习以及巩固
+    1)需要在配置文件中添加以下注解声明Repositories存放目录
+    @EnableJpaRepositories(basePackages = "com.demo.repository")
+    2)编写的接口需要继承JpaRepository<对应的Entity类,主键类型>
+      @Repository
+      public interface SeckillRepository extends JpaRepository<Seckill, Long> {
+4.高并发优化学习
+    解决高并发问题策略：
+        1.通过减少网络延时所占的响应时间百分比
+            1）将多个SQL编写入存储过程，减少访问数据库的次数
+            2）优化SQL顺序，将必须执行的SQL放于可能不会执行的SQL前方执行
+            3) 通过缓存，将有效时间较长的数据放入缓存中，命中时不用再次访问数据库
+                1> 使用缓存要确保数据的一致性，比如设置超时时间，在超时之后进行数据的再读取。
+                2> 一些变化速度快的数据，需要优化命中算法（zabbix,MemAdmin）
+                3> 使用MQ（消息队列）减少数据库高并发时的数据库访问量，在空闲时间再进行消息队列的消化（MQ的学习）
+                4）使用性能更高的序列化工具序列化从缓存中读取的对
+            4) 打包静态文件存放于CDN服务器，减少静态资源获取的时间 //TODO
+        2.减少事务运行时间，将非事务的操作提出事务方法之外，减少更新/查询时对数据锁的时间
+      象
+
+5.redis在开发中的使用
+  3) 对象存于Redis当中是需要进行序列化，而取出来时需要进行反序列化
+6.Springboot中的测试流程
+    1) ctrl+shirf+T创建Junit测试类
+    2) 添加类注解
+       @RunWith(SpringRunner.class)
+       @SpringBootTest(classes= SeckillApplication.class)
+    3) 编写setUp方法（可选）
+    4) 编写测试方法，在测试方法上添加@Test注解
+    5) 断言或者打印结果查看是否结果正确
+7.java 8 中Optional和Stream的学习
+8.mysql存储过程编写
+9.sql优化(高并发压缩性能)
+    1)可能会引起全表扫描的条件
+        like,or,!=,<>,=null,in,not in,字段表达式（num/2等）,字段函数式(COUNT(num)等)
+      全表扫描会增加检索时间，增加性能消耗
+    2)可能导致无法使用索引的条件
+        1> =左边使用函数
+        2> 复合索引时，检索条件中字段尽量与索引中一致，如果只要使用其中单个字段，
+           必须使用第一个才能保证能够使用到这个索引
+    3)减少一些没有意义的查询
+    4)使用exists代替in
+    5)减少一些没有很必要的索引
+    6)避免使用select *，尽量表明详细的字段名，
+    7)表中的数据类型优先级 数字型>varchar>char
+    8)避免频繁建表删表
